@@ -1,34 +1,34 @@
 module.exports = {
-        swaggerDefinition: {
-          info: {
-            description:
-              "This is the Devconnector API for developer social network.  You can find out more about devconnector at [http://devconnector.io](http://devconnector.io) or on [irc.freenode.net, #devconnector](http://devconnector.io.io/irc/).      For this API, you can use the api key `special-key` to test the authorization     filters.",
-            title: "Devconnector API",
-            version: "1.0",
-            termsOfService: "http://swagger.io/terms/",
-            contact: {
-              name: "Banphot Khongpom",
-              email: "banphot.kho@outlook.com",
-              url: "http://www.ooxgen.com",
-            },
-            servers: ["http://localhost:5000"],
-            securityDefinitions: {
-              Bearer: {
-                type: "apiKey",
-                name: "Authorization",
-                in: "header",
-              },
-            },
-          },
-          host: "localhost:5000",
-      
-          tags: [
-            {
-              name: "Deveconnector",
-              description: "API for users in the system",
-            },
-          ],
-          schemes: ["http", "https"],
+  swaggerDefinition: {
+    info: {
+      description:
+        "This is the Dev-Express API for developer social network.  You can find out more about Dev-Express at [http://dev-express.io](http://dev-express.io) or on [irc.freenode.net, #Dev-Express](http://Dev-Express.io.io/irc/).      For this API, you can use the api key `special-key` to test the authorization     filters.",
+      title: "Dev-Express API",
+      version: "1.0",
+      termsOfService: "http://dev-express.io/terms/",
+      contact: {
+        name: "Banphot Khongpom",
+        email: "banphot.kho@outlook.com",
+        url: "http://www.dev-express.io",
+      },
+      servers: ["http://localhost:5000"],
+      securityDefinitions: {
+        Bearer: {
+          type: "apiKey",
+          name: "Authorization",
+          in: "header",
         },
-        apis: ["./routes/api/*.js"],
-      }
+      },
+    },
+    host: "localhost:5000",
+
+    tags: [
+      {
+        name: "Dev-Express",
+        description: "API for deveoper social network",
+      },
+    ],
+    schemes: ["http", "https"],
+  },
+  apis: ["./routes/api/*.js"],
+};

@@ -13,14 +13,48 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 //@ Load User Models
-const Users = require("../../models/User");
+const User = require("../../models/User");
 const config = require("../../config/config");
- 
 
 //  @route      POST /api/v1/users
 //  @desc       Register user
 //  @access     public
 
+/**
+ * @swagger
+ * definitions:
+ *   users:
+ *     properties:
+ *       name:
+ *         type: string
+ *       email:
+ *         type: string
+ *       password:
+ *         type: string
+ *
+ */
+/**
+/**
+ * @swagger
+ * /api/v1/users:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: "User register"
+ *     description: For user register
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: user-register
+ *         description: User registration
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/users'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
 routes.post(
   "/",
   [
@@ -43,7 +77,7 @@ routes.post(
     const { name, email, password } = req.body;
     try {
       // @Check user exist on system with email
-      let user = await Users.findOne({ email });
+      let user = await User.findOne({ email });
       if (user) {
         res.status(400).json({ errors: [{ msg: "User already exists" }] });
       }
@@ -55,7 +89,7 @@ routes.post(
         d: "mm",
       });
 
-      const newUser = new Users({
+      const newUser = new User({
         name,
         email,
         avatar,
@@ -72,7 +106,7 @@ routes.post(
         user: {
           id: newUser.id,
           name: newUser.name,
-          email: newUser.email
+          email: newUser.email,
         },
       };
       jwt.sign(
@@ -81,11 +115,9 @@ routes.post(
         { expiresIn: 360000 },
         (err, token) => {
           if (err) throw err;
-          res.json({token});
+          res.json({ token });
         }
       );
-
-     
     } catch (err) {
       console.error(err.message);
       res.status(500).send("Server error");

@@ -1,3 +1,10 @@
+// @=================================================================================================================================
+// @Create by       Banphot Khongpom
+// @Desc            authen enpoint
+// @access          Private
+// @Create date     25/08/2020
+// @=================================================================================================================================
+
 const express = require("express");
 const routes = express.Router();
 const auth = require("../../middleware/auth");
@@ -9,6 +16,10 @@ const jwt = require("jsonwebtoken");
 const Users = require("../../models/User");
 const config = require("../../config/config");
 
+// @route   GET /api/v1/authen
+// @desc    test route authentication
+// @access  Private
+
 routes.get("/", auth, async (req, res) => {
   try {
     console.log(req.user.id);
@@ -19,6 +30,10 @@ routes.get("/", auth, async (req, res) => {
     res.status(500).send("Server error");
   }
 });
+
+// @route   POST /api/v1/authen
+// @desc    user login and generate token
+// @access  Private
 
 routes.post(
   "/",
@@ -39,20 +54,20 @@ routes.post(
     try {
       // @Check user exist on system with email
       let user = await Users.findOne({ email });
-      if (user) {
-        res.status(400).json({ errors: [{ msg: "Invalid Credentials" }] });
+      if (!user) {
+        res
+          .status(400)
+          .json({ errors: [{ msg: "Invalid Credentials email not found" }] });
       }
       // Compare password
       const isMatch = bcrypt.compareSync(password, user.password);
       console.log(isMatch);
       console.log(user.password);
       if (!isMatch) {
-        return res
-          .status(400)
-          .json({ errors: [{ msg: "Invalid Credentials" }] });
+        return res.status(400).json({
+          errors: [{ msg: "Invalid Credentials password not match" }],
+        });
       }
-
-    
       // @return jsonwebtoken
       const playload = {
         user: {

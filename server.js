@@ -42,17 +42,22 @@ const swaggerDocs = swaggerJsDoc(swaggerOption);
 // Create route for API Documents.
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
-
 app.server = http.createServer(app);
 
 // middleware
-// pare bodyparser json application 
+// pare bodyparser json application
 app.use(
   bodyParser.json({
     limit: config.bodyLimit,
   })
 );
 app.use(express.json({ extended: false }));
+
+// set header
+app.use(function (req, res, next) {
+  res.header("X-powered-by", "dev-express");
+  next();
+});
 
 // Settting Middleware for api route
 app.use("/api/v1/users", User);
