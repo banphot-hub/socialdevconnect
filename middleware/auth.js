@@ -13,7 +13,7 @@ module.exports = (req, res, next) => {
   try {
     const decode = jwt.verify(token, config.secretOrKey);
     req.user = decode.user;
-    res.setHeader("X-Powered-By", "developexpress");
+     
     next();
   } catch (err) {
     res.status(401).json({ msg: "Token is not valid" });
