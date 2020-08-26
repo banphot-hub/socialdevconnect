@@ -33,7 +33,7 @@ let db = require("./config/config").mongoURI;
 
 //Connect mongodb database
 mongoose
-  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
   .then(() => console.log("Database has connection successfully"))
   .catch((err) => console.log(err));
 

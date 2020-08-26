@@ -41,7 +41,7 @@ const config = require("../../config/config");
  *     tags:
  *       - Users
  *     summary: "User register"
- *     description: For user register
+ *     description: User registrtion to system
  *     produces:
  *       - application/json
  *     parameters:
@@ -54,6 +54,10 @@ const config = require("../../config/config");
  *     responses:
  *       200:
  *         description: Successfully created
+ *       400:
+ *         description: Problem may can't pass validation let your check data befor send to system
+ *       500: 
+ *         description: Internal server error please contract admin or your has not yet to correct using resource
  */
 routes.post(
   "/",
@@ -107,6 +111,7 @@ routes.post(
           id: newUser.id,
           name: newUser.name,
           email: newUser.email,
+          avatar: newUser.avatar
         },
       };
       jwt.sign(

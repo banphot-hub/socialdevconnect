@@ -25,7 +25,7 @@ module.exports = {
     tags: [
       {
         name: "Dev-Express",
-        description: "API for deveoper social network",
+        description: "API Documents",
       },
     ],
     schemes: ["http", "https"],

@@ -51,7 +51,7 @@ routes.get("/me", authen, async (req, res) => {
     // Find out profile collection with user id from req authen and populate only field user, name and avatar
     const profile = await Profile.findOne({
       user: req.user.id,
-    }).populate("users", ["name", "avatar"]);
+    }).populate("user", ["name", "avatar"]);
     // check found profile from user authen or not ?
     if (!profile) {
       res.status(400).json({ message: "There is no profile for this user" });
@@ -67,7 +67,73 @@ routes.get("/me", authen, async (req, res) => {
 // @route       POST /api/v1/profile
 // @desc        Create or update for user profiles
 // @access      Private
-
+/**
+ * @swagger
+ * definitions:
+ *   Profile:
+ *     properties:
+ *       company:
+ *         type: string
+ *       website:
+ *         type: string
+ *       location:
+ *         type: string
+ *       bio: 
+ *         type: string
+ *       status:
+ *         type: string 
+ *       githubusername:
+ *         type: string
+ *       skills: 
+ *         type: array
+ *         items:
+ *          oneOf:
+ *           - type: string
+ *       youtube:
+ *         type: string
+ *       facebook:
+ *         type: string
+ *       twitter:
+ *         type: string
+ *       instagram:
+ *         type: string
+ *       linkedin:
+ *         type: string
+ *          
+ */
+/**
+/**
+ * @swagger
+ * /api/v1/profile:
+ *   post:
+ *     tags:
+ *       - Profile
+ *     summary: "Create user profile"
+ *     security:
+ *       - x-auth-token: []
+ *     description: Create or update user profiles.
+ *     parameters:
+ *       - name: x-auth-token
+ *         description: Credentials token keys
+ *         in: header
+ *         type: string
+ *         required: true
+ *       - name: create-user-profile
+ *         description: Create or update user profile
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Profile'
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ *       400:
+ *         description: Please check token or api validaation.
+ *       500:
+ *         description: Server error may problem from in code of API
+ */
 routes.post(
   "/",
   [
@@ -77,7 +143,7 @@ routes.post(
       check("skills", "Skills is required").not().isEmpty(),
     ],
   ],
-  (req, res) => {
+  async (req, res) => {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -119,9 +185,102 @@ routes.post(
     if (instagram) profileFields.social.instagram = instagram;
     if (linkedin) profileFields.social.linkedin = linkedin;
 
-    console.log(profileFields.skills);
-    res.send("hello world");
+    try {
+
+      // Check user profile from auth rout data because after pass route authen system send user information on it
+      let profile = await Profile.findOne({user: req.user.id});
+   
+      if(profile){
+        //update 
+         profile = await Profile.findOneAndUpdate({ user: req.body.id },{ $set: profileFields },{ new: true });
+         return res.json(profile);
+      }
+     //Create profile
+      profile = new Profile(profileFields);
+      await profile.save();
+      res.json(profile);
+    }catch(err){
+        console.error(err.message);
+        res.status(500).send('Server error');
+    }
   }
 );
+
+// @route       GET /api/v1/profile
+// @desc        Get all profile user
+// @access      Private
+
+/**
+ * @swagger
+ * /api/v1/profile:
+ *   get:
+ *     tags:
+ *        - Users
+ *     summary: "Get all user profile"
+ *     description: Get all user profile
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Success to validate token
+ *       500:
+ *          description: 'Server error'
+ *
+ */
+routes.get('/', async (req,res)=>{
+  try {
+    const profiles = await Profile.find().populate('user',['name','avatar']);
+    res.json(profiles);
+
+  }catch(err){
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// @route       GET /api/v1/profile/user/:user_id
+// @desc        Get profile by user id
+// @access      Public
+/**
+ * @swagger
+ * paths:
+ *   /api/v1/profile/user/{user_id}:
+ *     get:
+ *      tags:
+ *        - Users
+ *      summary: Get user profile by user id
+ *      description: Get user profile by user id
+ *      parameters:
+ *         - in: path
+ *           name: user_id
+ *           type: string
+ *           description: Plese enter user id
+ *      produces:
+ *         - application/json
+ *      responses:
+ *         200:
+ *             description: Success to validate token
+ *         500:
+ *             description: 'Server error'
+ *
+ */
+routes.get('/user/:user_id', async (req,res)=>{
+  try {
+    console.log(req.params.user_id);
+    const profiles = await Profile.findOne({user: req.params.user_id}).populate('user',['name','avatar']);
+    if(!profiles) {
+      return res.status(400).json({messsage: 'There is no profile for this user'});
+    }
+    res.json(profiles);
+
+  }catch(err){
+    console.error(err.message);
+    res.status(500).send('Internal server error');
+  }
+});
+
+routes.delete('/',auth,(req,res)=>{
+  
+});
 
 module.exports = routes;

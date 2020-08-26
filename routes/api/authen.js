@@ -34,7 +34,39 @@ routes.get("/", auth, async (req, res) => {
 // @route   POST /api/v1/authen
 // @desc    user login and generate token
 // @access  Private
-
+/**
+ * @swagger
+ * definitions:
+ *   login:
+ *     properties:
+ *       email:
+ *         type: string
+ *       assword:
+ *         type: string
+ *       
+ */
+/**
+/**
+ * @swagger
+ * /api/v1/authen:
+ *   post:
+ *     tags:
+ *       - Users
+ *     summary: "User login"
+ *     description: For user login
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - name: user-login
+ *         description: User login
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/login'
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ */
 routes.post(
   "/",
   [
@@ -74,6 +106,7 @@ routes.post(
           id: user.id,
           name: user.name,
           email: user.email,
+          avatar: user.avatar
         },
       };
       jwt.sign(
