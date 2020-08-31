@@ -25,7 +25,7 @@ module.exports = {
     tags: [
       {
         name: "Open-Me",
-        description: "API Documents-BCP (Business Continuity Plan) application platform for Tokiomarine life Insurance PLC.",
+        description: "API Documents-BCP (Business Continuity Plan) application platform ",
       },
     ],
     schemes: ["http", "https"],
