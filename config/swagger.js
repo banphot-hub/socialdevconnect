@@ -2,14 +2,14 @@ module.exports = {
   swaggerDefinition: {
     info: {
       description:
-        "This is the Dev-Express API for developer social network.  You can find out more about Dev-Express at [http://dev-express.io](http://dev-express.io) or on [irc.freenode.net, #Dev-Express](http://Dev-Express.io.io/irc/).      For this API, you can use the api key `special-key` to test the authorization     filters.",
-      title: "Dev-Express API",
+        "This is the Open-Me API for the Open-API.  You can find out more about open-me at [http://open-me.io](http://ope-me.io) or on [doc.open-me.io, #Open-Me](http://open-me.io/irc/).      For this API, you can use the api key `special-key` to test the authorization     filters.",
+      title: "Open-Me API",
       version: "1.0",
-      termsOfService: "http://dev-express.io/terms/",
+      termsOfService: "http://open-me.io/terms/",
       contact: {
         name: "Banphot Khongpom",
-        email: "banphot.kho@outlook.com",
-        url: "http://www.dev-express.io",
+        email: "banphot.kho@open-me.io",
+        url: "http://www.open-me.io",
       },
       servers: ["http://localhost:5000"],
       securityDefinitions: {
@@ -24,8 +24,8 @@ module.exports = {
 
     tags: [
       {
-        name: "Dev-Express",
-        description: "API Documents",
+        name: "Open-Me",
+        description: "API Documents-BCP (Business Continuity Plan) application platform for Tokiomarine life Insurance PLC.",
       },
     ],
     schemes: ["http", "https"],

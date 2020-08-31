@@ -7,13 +7,15 @@
 
 const express = require("express");
 const routes = express.Router();
+const request = require("request");
+const config = require("../../config/config");
 const { check, validationResult } = require("express-validator");
 const authen = require("../../middleware/auth");
 // Load Profile model and user model
 const Profile = require("../../models/Profile");
 const User = require("../../models/User");
 const auth = require("../../middleware/auth");
-const { restart } = require("nodemon");
+
 
 // @route       GET /api/v1/profile/me
 // @desc        Get current user profiles
@@ -485,6 +487,189 @@ routes.delete("/experience/:exp_id", auth, async (req, res) => {
       profile.save().then((profile) => res.json(profile));
     })
     .catch((err) => res.status(404).json(err));
+});
+
+// @route       PUT /api/v1/profile/education
+// @desc        Add profile education
+// @access      Private
+
+/**
+ * @swagger
+ * definitions:
+ *   Education:
+ *     properties:
+ *       school:
+ *         type: string
+ *       degree:
+ *         type: string
+ *       fieldofstudy:
+ *         type: string
+ *       from:
+ *         type: string
+ *       to:
+ *         type: string
+ *       current:
+ *         type: boolean
+ *       description:
+ *         type: string
+ *
+ */
+/**
+/**
+ * @swagger
+ * /api/v1/profile/education:
+ *   put:
+ *     tags:
+ *       - Profile
+ *     summary: "Add profile education"
+ *     security:
+ *       - x-auth-token: []
+ *     description: Add profile education.
+ *     parameters:
+ *       - name: x-auth-token
+ *         description: Credentials token keys
+ *         in: header
+ *         type: string
+ *         required: true
+ *       - name: add-profile-education
+ *         description: Add profile education
+ *         in: body
+ *         required: true
+ *         schema:
+ *           $ref: '#/definitions/Education'
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: Successfully created
+ *       400:
+ *         description: Please check token or api validaation.
+ *       500:
+ *         description: Server error may problem from in code of API
+ */
+routes.put(
+  "/education",
+  [
+    auth,
+    [
+      check("school", "School is required").not().isEmpty(),
+      check("degree", "The degree is required").not().isEmpty(),
+      check("fieldofstudy", "fieldofstudy date is required").not().isEmpty(),
+      check("from", "From date is required").not().isEmpty(),
+    ],
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
+    }
+    // to assign value from req.body
+    const {
+      school,
+      degree,
+      fieldofstudy,
+      from,
+      to,
+      current,
+      description,
+    } = req.body;
+
+    const newEducation = {
+      school: school,
+      degree: degree,
+      fieldofstudy: fieldofstudy,
+      from: from,
+      to: to,
+      current: current,
+      description: description,
+    };
+
+    try {
+      // Find profile from user
+      const profile = await Profile.findOne({ user: req.user.id });
+      if (!profile) {
+        res.status(400).send("Not found user profile");
+      }
+      profile.education.unshift(newEducation);
+
+      await profile.save();
+
+      res.json(profile);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Internal server error");
+    }
+  }
+);
+
+ 
+
+routes.delete("/education/:edu_id", auth, async (req, res) => {
+  Profile.findOne({ user: req.user.id })
+    .then((profile) => {
+      // Get remove index
+      const removeIndex = profile.education
+        .map((item) => item.id)
+        .indexOf(req.params.edu_id);
+
+      // Splice out of array
+      profile.education.splice(removeIndex, 1);
+
+      // Save
+      profile.save().then((profile) => res.json(profile));
+    })
+    .catch((err) => res.status(404).json(err));
+});
+
+// @route       GET /api/v1/profile/user/:user_id
+// @desc        Get profile by user id
+// @access      Public
+/**
+ * @swagger
+ * paths:
+ *   /api/v1/profile/github/{username}:
+ *     get:
+ *      tags:
+ *        - Profile
+ *      summary: Get github repository
+ *      description: Get github repository
+ *      parameters:
+ *         - in: path
+ *           name: username
+ *           type: string
+ *           description: Plese enter user id
+ *      produces:
+ *         - application/json
+ *      responses:
+ *         200:
+ *             description: Success to validate token
+ *         500:
+ *             description: 'Server error'
+ *
+ */
+
+
+routes.get("/github/:username", (req, res) => {
+  try {
+    const option = {
+      uri: `https://api.github.com/users/${req.params.username}/repos?per_page=5&sort=created:asc&client_id=${config.githubSecret}&client_secret=${config.githubSecret}`,
+      method: "GET",
+      headers: { "user-agent": "node.js" }
+    }
+
+    request(option, (error,response,body) => {
+      if(error) {
+        console.error(error.message);
+      }
+      if(response.statusCode !==200){
+        return res.status(404).json({message: 'No github profile found'});
+      }
+      res.json(JSON.parse(body));
+    });
+
+  } catch (err) {
+
+  }
 });
 
 module.exports = routes;
