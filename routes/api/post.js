@@ -390,17 +390,17 @@ routes.post(
   );
 
 
-  /**
+ /**
  * @swagger
  * paths:
- *   /api/v1/post/comment/{id}/{commentId}:
+ *   /api/v1/post/comment/{id}/{comment_id}:
  *     delete:
  *      tags:
  *        - Post
- *      summary: Add post comment by post id
+ *      summary: Delete post comment
  *      security:
  *        - x-auth-token: []
- *      description: Add post comment by post id
+ *      description: Delete post comments
  *      parameters:
  *         - name: x-auth-token
  *           in: header
@@ -409,16 +409,23 @@ routes.post(
  *           description: Credentials token keys
  *         - in: path
  *           name: id
+ *           schema:
  *           type: string
- *           name: commentId
+ *           description: Post id
+ *         - in: path
+ *           name: comment_id
+ *           schema:
  *           type: string
+ *           description: Comment id
  *      produces:
  *         - application/json
  *      responses:
  *         200:
  *             description: Success to validate token
  *         500:
- *             description: 'Server error'
+ *             description: Server error
+ *         401:  
+ *             description: Unauthorize  
  *
  */
 
