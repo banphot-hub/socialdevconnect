@@ -19,6 +19,7 @@ const User = require("./routes/api/user");
 const Post = require("./routes/api/post");
 const Profile = require("./routes/api/profile");
 const Authen = require("./routes/api/authen");
+const ProductCategory = require("./routes/api/productcategory");
 
 //Load swagger document and package
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -33,7 +34,12 @@ let db = require("./config/config").mongoURI;
 
 //Connect mongodb database
 mongoose
-  .connect(db, { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true, useFindAndModify: false })
+  .connect(db, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: false,
+  })
   .then(() => console.log("Database has connection successfully"))
   .catch((err) => console.log(err));
 
@@ -64,6 +70,7 @@ app.use("/api/v1/users", User);
 app.use("/api/v1/post", Post);
 app.use("/api/v1/profile", Profile);
 app.use("/api/v1/authen", Authen);
+app.use("/api/v1/productcategory", ProductCategory);
 
 // Start service app server
 app.server.listen(config.port);

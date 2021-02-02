@@ -308,7 +308,6 @@ routes.put("/unlike/:id", auth, async (req, res) => {
   }
 });
 
-
 /**
  * @swagger
  * definitions:
@@ -358,39 +357,38 @@ routes.put("/unlike/:id", auth, async (req, res) => {
  */
 
 routes.post(
-    "/comment/:id",
-    [auth, [check("text", "Text is required").not().isEmpty()]],
-    async (req, res) => {
-      const errors = validationResult(req);
-      if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-      }
-      // find User from user authen
-      const users = await User.findById(req.user.id).select("-password");
-      const post = await Post.findById(req.params.id);
-      console.log(req.user.id);
-      try {
-        const newComment = {
-          text: req.body.text,
-          name: users.name,
-          avatar: users.avatar,
-          user: req.user.id,
-        }
-
-        post.comment.unshift(newComment);
-
-        await post.save()
-
-        res.json({ success: true, data: post.comment });
-      } catch (err) {
-        console.error(err.message);
-        res.status(500).send("Internal server errors");
-      }
+  "/comment/:id",
+  [auth, [check("text", "Text is required").not().isEmpty()]],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
-  );
+    // find User from user authen
+    const users = await User.findById(req.user.id).select("-password");
+    const post = await Post.findById(req.params.id);
+    console.log(req.user.id);
+    try {
+      const newComment = {
+        text: req.body.text,
+        name: users.name,
+        avatar: users.avatar,
+        user: req.user.id,
+      };
 
+      post.comment.unshift(newComment);
 
- /**
+      await post.save();
+
+      res.json({ success: true, data: post.comment });
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Internal server errors");
+    }
+  }
+);
+
+/**
  * @swagger
  * paths:
  *   /api/v1/post/comment/{id}/{comment_id}:
@@ -424,35 +422,38 @@ routes.post(
  *             description: Success to validate token
  *         500:
  *             description: Server error
- *         401:  
- *             description: Unauthorize  
+ *         401:
+ *             description: Unauthorize
  *
  */
 
-  routes.delete('/comment/:id/:comment_id',auth, async (req,res)=>{
-    try{
-        const post = await Post.findById(req.params.id);
-        // Pull out comment
-        const comment =  post.comment.find(comment => comment.id === req.params.comment_id);
-        // Make sure comment exists
-        if(!comment){
-            return res.status(404).json({message: 'Comment does not exist'});
-        }
-        // Check user
-        if(comment.user.toString() !== req.user.id){
-            return res.status(404).json({message: 'User not authorized'});
-        }
-        // Get removeIndex
-        const removeIndex = post.comment.map(comment=> comment.user.toString()).indexOf(req.user.id);
-        post.comment.splice(removeIndex,1);
-
-        await post.save();
-        res.json(post.comment);
-
-    } catch(err){
-        console.error(err.message);
-        res.status(500).send('Internal server error');
+routes.delete("/comment/:id/:comment_id", auth, async (req, res) => {
+  try {
+    const post = await Post.findById(req.params.id);
+    // Pull out comment
+    const comment = post.comment.find(
+      (comment) => comment.id === req.params.comment_id
+    );
+    // Make sure comment exists
+    if (!comment) {
+      return res.status(404).json({ message: "Comment does not exist" });
     }
-  });
+    // Check user
+    if (comment.user.toString() !== req.user.id) {
+      return res.status(404).json({ message: "User not authorized" });
+    }
+    // Get removeIndex
+    const removeIndex = post.comment
+      .map((comment) => comment.user.toString())
+      .indexOf(req.user.id);
+    post.comment.splice(removeIndex, 1);
+
+    await post.save();
+    res.json(post.comment);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Internal server error");
+  }
+});
 
 module.exports = routes;

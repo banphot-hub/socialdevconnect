@@ -25,7 +25,7 @@ module.exports = {
     tags: [
       {
         name: "Open-Me",
-        description: "API Documents-BCP (Business Continuity Plan) application platform ",
+        description: "API-Support posmobile online pos of sales ",
       },
     ],
     schemes: ["http", "https"],
