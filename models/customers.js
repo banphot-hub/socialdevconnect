@@ -9,18 +9,22 @@ const customerSchem = new Schema({
   },
   custaddress: {
     type: String,
-    required: true,
+    required: false,
   },
   custprovince: {
     type: String,
-    required: true,
+    required: false,
   },
   custpostcode: {
     type: String,
   },
   custmobile: {
     type: String,
-    required: true,
+    required: false,
+  },
+  custtele: {
+    type: String,
+    required: false,
   },
   custemail: {
     type: String,

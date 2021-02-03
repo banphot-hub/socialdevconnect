@@ -111,7 +111,7 @@ routes.post(
           id: newUser.id,
           name: newUser.name,
           email: newUser.email,
-          avatar: newUser.avatar
+          avatar: newUser.avatar,
         },
       };
       jwt.sign(

@@ -21,6 +21,9 @@ const Profile = require("./routes/api/profile");
 const Authen = require("./routes/api/authen");
 const ProductCategory = require("./routes/api/productcategory");
 const Productunit = require("./routes/api/prouductunit");
+const customers = require("./routes/api/customers");
+const Supplier = require("./routes/api/supplier");
+const Product = require("./routes/api/product");
 
 //Load swagger document and package
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -75,6 +78,9 @@ app.use("/api/v1/profile", Profile);
 app.use("/api/v1/authen", Authen);
 app.use("/api/v1/productcategory", ProductCategory);
 app.use("/api/v1/productunit", Productunit);
+app.use("/api/v1/customers", customers);
+app.use("/api/v1/supplier", Supplier);
+app.use("/api/v1/product", Product);
 
 // Start service app server
 app.server.listen(config.port);

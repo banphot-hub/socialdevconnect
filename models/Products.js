@@ -9,7 +9,7 @@ const productSchema = new Schema({
   },
   productCode: {
     type: String,
-    required: true,
+    required: false,
   },
   Productcategory: {
     type: mongoose.SchemaTypes.ObjectId,
@@ -17,25 +17,29 @@ const productSchema = new Schema({
   },
   productDescription: {
     type: String,
+    required: false,
   },
   sellPrice: {
     type: Number,
-    required: true,
+    default: 0,
+    required: false,
   },
   productDimession: {
     type: String,
     required: false,
   },
   productUnit: {
-    type: mongoose.SchemaType.ObjectId,
+    type: mongoose.SchemaTypes.ObjectId,
     ref: "productunit",
   },
+
   supplier: [
     {
       supplier: {
         type: mongoose.SchemaTypes.ObjectId,
         ref: "supplier",
       },
+      required: false,
     },
   ],
   totalstock: {

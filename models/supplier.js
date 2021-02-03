@@ -9,23 +9,23 @@ const supplierSchema = new Schema({
   },
   suppleraddress: {
     type: String,
-    required: true,
+    required: false,
   },
   supplierprovince: {
     type: String,
-    required: true,
+    required: false,
   },
   supplierpostcode: {
     type: String,
-    required: true,
+    required: false,
   },
   suppliermobile: {
     type: String,
-    required: true,
+    required: false,
   },
   suppliertele: {
     type: String,
-    required: true,
+    required: false,
   },
   suplieremail: {
     type: String,
