@@ -10,7 +10,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const http = require("http");
 const bodyParser = require("body-parser");
-
+const fileupload = require("express-fileupload");
 //Load Configuration file
 const config = require("./config/config");
 
@@ -20,6 +20,7 @@ const Post = require("./routes/api/post");
 const Profile = require("./routes/api/profile");
 const Authen = require("./routes/api/authen");
 const ProductCategory = require("./routes/api/productcategory");
+const Productunit = require("./routes/api/prouductunit");
 
 //Load swagger document and package
 const swaggerJsDoc = require("swagger-jsdoc");
@@ -47,7 +48,8 @@ mongoose
 const swaggerDocs = swaggerJsDoc(swaggerOption);
 // Create route for API Documents.
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-
+// load
+app.use(fileupload());
 app.server = http.createServer(app);
 
 // middleware
@@ -66,11 +68,13 @@ app.use(function (req, res, next) {
 });
 
 // Settting Middleware for api route
+
 app.use("/api/v1/users", User);
 app.use("/api/v1/post", Post);
 app.use("/api/v1/profile", Profile);
 app.use("/api/v1/authen", Authen);
 app.use("/api/v1/productcategory", ProductCategory);
+app.use("/api/v1/productunit", Productunit);
 
 // Start service app server
 app.server.listen(config.port);
