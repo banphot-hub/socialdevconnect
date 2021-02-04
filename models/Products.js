@@ -3,11 +3,11 @@ const Schema = mongoose.Schema;
 
 // Create Schema
 const productSchema = new Schema({
-  productName: {
+  productname: {
     type: String,
     required: true,
   },
-  productCode: {
+  productcode: {
     type: String,
     required: false,
   },
@@ -15,24 +15,31 @@ const productSchema = new Schema({
     type: mongoose.SchemaTypes.ObjectId,
     ref: "productcategory",
   },
-  productDescription: {
+  productdescription: {
     type: String,
     required: false,
   },
-  sellPrice: {
+  sellprice: {
     type: Number,
     default: 0,
     required: false,
   },
-  productDimession: {
+  costprice: {
+    type: Number,
+    default: 0,
+  },
+  productdimession: {
     type: String,
     required: false,
   },
-  productUnit: {
+  productunit: {
     type: mongoose.SchemaTypes.ObjectId,
     ref: "productunit",
   },
-
+  productimage: {
+    type: String,
+    required: false,
+  },
   supplier: [
     {
       supplier: {

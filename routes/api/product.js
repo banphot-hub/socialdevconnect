@@ -91,6 +91,57 @@ routes.put("/:id", async (req, res) => {
   }
 });
 
+//  @route      delete /api/v1/product/{id}/photo
+//  @desc       Create products
+//  @access     private
+
+routes.put("/:id/photo", async (req, res) => {
+  try {
+    const product = await Product.findById(req.params.id);
+    // check found this product  or not !
+    if (!product) {
+      return res.status(404).json({ message: "Product not found!" });
+    }
+    // check have file upload or not
+    if (!req.files) {
+      return res.status(404).json({ message: "Please upload files" });
+    }
+    // check file type is images
+    const file = req.files.file;
+    if (!file.mimetype.startsWith("image")) {
+      return res.status(400).json({ message: "Please upload image file..." });
+    }
+    // Check file upload over max file upload
+    if (file.size > config.max_file_upload) {
+      return res.status(400).json({
+        message: `Please upload file less than ${config.max_file_upload}`,
+      });
+    }
+    // defind file and extention with path
+    file.name = `photo_product_${productcategory._id}${
+      path.parse(file.name).ext
+    }`;
+    //Mov file to local path
+    file.mv(`${config.file_upload_path}/${file.name}`, async (err) => {
+      // check move file error or not
+      if (err) {
+        return res.status(500).json({
+          message: `Promblem file upload}`,
+        });
+      }
+      const result = await Product.findByIdAndUpdate(req.params.id, {
+        productimage: file.name,
+      });
+      res.status(200).json({ success: true, data: result });
+    });
+  } catch (err) {
+    if (err.kind === "ObjectId") {
+      return res.status(404).jsoin({ msg: "Product  not found" });
+    }
+    res.status(500).send("Inter server error");
+  }
+});
+
 //  @route      delete /api/v1/supplier/{id}
 //  @desc       Create products
 //  @access     private
